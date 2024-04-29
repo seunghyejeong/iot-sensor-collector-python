@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-sensor-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iot-sensor-collector
+  template:
+    metadata:
+      labels:
+        app: iot-sensor-collector
+    spec:
+      containers:
+        - name: iot-sensor-collector
+          image: 44ce789b-kr1-registry.container.nhncloud.com/container-platform-registry/iot-sensor-collector
+      imagePullSecrets:
+        - name: ncr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-sensor-collector-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 31008
+  selector:
+    app: iot-sensor-collector

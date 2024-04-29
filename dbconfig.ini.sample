@@ -1,0 +1,15 @@
+[LOCAL]
+HOST = localhost
+DATABASE_NAME = cp
+USER = bami
+PASSWORD = master
+PORT = 3306
+CHARSET = utf-8
+
+[DEV]
+HOST = 
+DATABASE_NAME = cp
+USER = bami
+PASSWORD = master
+PORT = 31306
+CHARSET = utf-8
