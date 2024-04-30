@@ -66,7 +66,7 @@ class TestApp(unittest.TestCase):
     # 데이터 유효성 테스트 
     def test_acceleration_endpoint_invalid_data(self):
         # /acceleration 엔드포인트에 잘못된 JSON 데이터를 포함하는 POST 요청 보내기
-        response = self.app.post('/acceleration', json={"x": "-3", "y": 2.0, "z": 3.0})
+        response = self.app.post('/acceleration', json={"x": "badß", "y": 2.0, "z": 3.0})
 
         # 응답 확인
         self.assertEqual(response.status_code, 400)

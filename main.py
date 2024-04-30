@@ -18,25 +18,32 @@ app = Flask(__name__)
 # # 기능 구현
 # # 1. mqtt 
 # Broker와 연결 테스트 
-broker = "tcp://localhost"
-port = "1883"
+host = "localhost"
+port = 1883
 topic = "test/topic"
 client_id = "python_mqtt_client"
 
-def connect_mqtt():
-    def on_connect(client, userdata,message, rc):
+def connect_mqtt() -> mqtt.Client :
+    def on_connect(client, userdata, flags, rc, properties=None):  
         if rc == 0:
-            print("Connected with result code" + str(rc)) 
+            print("Connected with result code", rc)  
             client.subscribe(topic)
         else:
-            print("failed to connect return code %d\n", rc)
-            
-    client = mqtt.Client(client_id=client_id)
+            print("Failed to connect return code", rc)  
+    def on_disconnect(client, userdata, flags, rc=0):
+        print(f"disconnected result code {str(rc)}")
+
+    def on_log(client, userdata, level, buf):
+        print(f"log: {buf}")
+                    
+    client = mqtt.Client(client_id=client_id, clean_session=True, userdata=None, callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
     client.on_connect = on_connect
-    client.connect(broker, port)
-    client.loop_start()  # MQTT 클라이언트의 루프 시작
-    
+    client.on_disconnect = on_disconnect
+    client.on_log=on_log
+    client.connect(host=host, port=port)
+    client.loop
     return client
+
 
 # # 2. post acceleration
 @app.route('/acceleration', methods=['POST'])
@@ -70,7 +77,11 @@ def postLocation():
     return jsonify({"message" : "Location Data received",
                     "latitude" : location_data.latitude,
                     "longitude" : location_data.longitude}), 200
+def run():
+    client = connect_mqtt()
+    client = connect_mqtt()  # MQTT 클라이언트 연결
+    client.loop_start()
+    print(f"connect to broker {host}:{port}")
 
 if __name__ == '__main__':
-    mqtt_client = connect_mqtt()  # MQTT 클라이언트 연결
-    app.run(debug=True, port=5000)  # Flask 애플리케이션 실행
+    run()
