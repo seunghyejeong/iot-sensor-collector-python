@@ -20,9 +20,16 @@ spec:
               name: mqtt
             - containerPort: 9001
               name: websockets
-
+          volumeMounts:            # Moved volumeMounts inside the containers section
+            - name: mosquitto-config-volume
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+              readOnly: false
+      volumes:
+        - name: mosquitto-config-volume
+          configMap:
+            name: mosquitto-config
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,3 +47,14 @@ spec:
       name: websockets
   selector:
     app: mosquitto
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+data:
+  mosquitto.conf: |
+    listener 1883
+    listener 9001
+    protocol websockets
+    allow_anonymous true

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: iot-sensor-collector
-          image: 44ce789b-kr1-registry.container.nhncloud.com/container-platform-registry/iot-sensor-collector
+          image: seunghyejeong/iot-sensor-collector:4.3
       imagePullSecrets:
         - name: ncr
 ---
